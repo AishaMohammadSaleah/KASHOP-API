@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace KASHOP.DAL
+namespace KASHOP.DAL.Dto
 {
-    public class Database
+    public class CategoryRequest
     {
+        public List<CategoryTranslationRequest> Translations { get; set; }
+
     }
 }
