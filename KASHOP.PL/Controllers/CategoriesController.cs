@@ -1,4 +1,5 @@
-﻿using KASHOP.DAL.Data;
+﻿using KASHOP.BLL.Services;
+using KASHOP.DAL.Data;
 using KASHOP.DAL.Dto;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
@@ -17,27 +18,27 @@ namespace KASHOP.PL.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IStringLocalizer<SharedResources> _localizer;
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoriesController(ApplicationDbContext context, IStringLocalizer<SharedResources> localizer, ICategoryRepository categoryRepository)
+        private readonly ICategoryService _categoryService;
+        public CategoriesController(ApplicationDbContext context, IStringLocalizer<SharedResources> localizer, ICategoryService categoryService)
         {
             _context = context;
             _localizer = localizer;
-            _categoryRepository = categoryRepository;
+            _categoryService = categoryService;
         }
         [HttpGet]
         public IActionResult Index()
         {
-              var categories = _categoryRepository.getAll();
-            var response = categories.Adapt<List<CategoryResponse>>();
+            var categories = _categoryService.GetAllCategories();
 
             return Ok(new {
-                _localizer["sucses"].Value,response });
+                _localizer["sucses"].Value,
+                categories
+            });
         }
         [HttpPost("")]
         public IActionResult Create( CategoryRequest request ) {
         
-            var category =request.Adapt<Category>();
-            _categoryRepository.create(category);
+            var response = _categoryService.CreateCategory(request);
             return Ok();
 
         }

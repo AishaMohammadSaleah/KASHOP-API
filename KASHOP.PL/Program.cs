@@ -1,3 +1,4 @@
+using KASHOP.BLL.Services;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Repository;
 using Microsoft.AspNetCore.Localization;
@@ -38,6 +39,7 @@ namespace KASHOP.PL
                 options.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
             });
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
             var app = builder.Build();
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
             // Configure the HTTP request pipeline.
