@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Threading.Tasks;
 
 namespace KASHOP.PL.Controllers
 {
@@ -26,9 +27,9 @@ namespace KASHOP.PL.Controllers
             _categoryService = categoryService;
         }
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = _categoryService.GetAllCategories();
+            var categories = await _categoryService.GetAllCategories();
 
             return Ok(new {
                 _localizer["sucses"].Value,
@@ -36,9 +37,9 @@ namespace KASHOP.PL.Controllers
             });
         }
         [HttpPost("")]
-        public IActionResult Create( CategoryRequest request ) {
+        public async Task<IActionResult> Create( CategoryRequest request ) {
         
-            var response = _categoryService.CreateCategory(request);
+            var response =await _categoryService.CreateCategory(request);
             return Ok();
 
         }

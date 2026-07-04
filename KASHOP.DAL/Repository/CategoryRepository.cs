@@ -16,16 +16,16 @@ namespace KASHOP.DAL.Repository
         {
             _context = context;
         }
-        public List<Category> getAll()
+        public async Task< List<Category>> getAllAsync()
         {
-            return _context.Categories.Include(c => c.Translations).ToList();
+            return await _context.Categories.Include(c => c.Translations).ToListAsync();
 
         }
 
-        Category ICategoryRepository.create(Category category)
+        public async Task <Category> createAsync(Category category)
         {
-           _context.Add(category);
-            _context.SaveChanges();
+           await _context.AddAsync(category);
+            await _context.SaveChangesAsync();
             return category;
         }
 

@@ -18,18 +18,18 @@ namespace KASHOP.BLL.Services
             _categoryRepository = categoryRepository;
         }
 
-        public CategoryResponse CreateCategory(CategoryRequest categoryRequest)
+        public async Task< CategoryResponse> CreateCategory(CategoryRequest categoryRequest)
         {
             var category = categoryRequest.Adapt<Category>();
-            _categoryRepository.create(category);
+            await  _categoryRepository.createAsync(category);
             return category.Adapt<CategoryResponse>();
 
 
         }
 
-        public  List<CategoryResponse> GetAllCategories()
+        public async Task<List<CategoryResponse>> GetAllCategories()
         {
-            var catiegories = _categoryRepository.getAll();
+            var catiegories = await _categoryRepository.getAllAsync();
             var response = catiegories.Adapt<List<CategoryResponse>>();
             return response;
         }
