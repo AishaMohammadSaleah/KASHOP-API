@@ -43,6 +43,12 @@ namespace KASHOP.PL.Controllers
             return Ok();
 
         }
-       
+        [HttpGet("{id}")]
+        public async   Task<IActionResult> GetById(int id)
+        {
+            var category = await _categoryService.GetCategory(c => c.Id == id);
+            return Ok(category);
+        }
+
     }
 }

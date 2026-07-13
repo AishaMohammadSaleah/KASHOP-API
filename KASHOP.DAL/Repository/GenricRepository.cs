@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,23 +18,35 @@ namespace KASHOP.DAL.Repository
         {
             _context = context;
         }
-        public async Task<List<T>> getAllAsync(string[]? includes =null)  
+        private IQueryable<T> ApplyIncludes(IQueryable<T> query, string[]? includes)
         {
-            IQueryable<T> query = _context.Set<T>();//nothing will return to the user ,its on the server side
-            if (includes != null) 
+            if (includes != null)
             {
                 foreach (var include in includes)
                 {
-                    query = query.Include(include);//we can add multiple includes to the query becouse the query is an IQueryable and we can add multiple includes to it
+                    query = query.Include(include);
                 }
             }
+            return query;
+        }
+        public async Task<List<T>> getAllAsync(string[]? includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            query = ApplyIncludes(query, includes);
             return await query.ToListAsync();
         }
-        public async Task<T> createAsync(T entity) 
+        public async Task<T> createAsync(T entity)
         {
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
+        }
+        public async Task<T> GetOne(Expression<Func<T, bool>> filter, string[]? includes = null)
+        {
+            IQueryable<T> query = _context.Set<T>();
+            query = ApplyIncludes(query, includes);
+            return await query.FirstOrDefaultAsync(filter);
+
         }
     }
 }
