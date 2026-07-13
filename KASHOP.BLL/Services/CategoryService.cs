@@ -28,6 +28,7 @@ namespace KASHOP.BLL.Services
 
         }
 
+      
         public async Task<List<CategoryResponse>> GetAllCategories()
         {
             var catiegories = await _categoryRepository.getAllAsync( new string[]
@@ -47,5 +48,15 @@ namespace KASHOP.BLL.Services
              return category.Adapt<CategoryResponse>();
              
         }
+        public async Task<bool> DeleteCategory(int Id)
+        {
+          var category= await _categoryRepository.GetOne(c => c.Id == Id);
+            if (category == null)
+            {
+                return false;
+            }
+            return await _categoryRepository.DeleteAsync(category);
+        }
+
     }
 }
