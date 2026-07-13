@@ -17,11 +17,19 @@ namespace KASHOP.DAL.Repository
         {
             _context = context;
         }
-        public async Task<List<T>> GetAllAsync<T>() where T : class
+        public async Task<List<T>> getAllAsync(string[]? includes =null)  
         {
-            return await _context.Set<T>(). ToListAsync();
+            IQueryable<T> query = _context.Set<T>();//nothing will return to the user ,its on the server side
+            if (includes != null) 
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);//we can add multiple includes to the query becouse the query is an IQueryable and we can add multiple includes to it
+                }
+            }
+            return await query.ToListAsync();
         }
-        public async Task<T> CreateAsync<T>(T entity) where T : class
+        public async Task<T> createAsync(T entity) 
         {
             await _context.AddAsync(entity);
             await _context.SaveChangesAsync();
