@@ -4,11 +4,14 @@ using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
 using KASHOP.PL.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace KASHOP.PL
@@ -45,6 +48,9 @@ namespace KASHOP.PL
                 options.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
             });
 
+     
+            builder.Services.AddAuthorization();
+
             builder.Services.AddScoped<ISeedData, RoleSeedData>();
 
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -57,6 +63,27 @@ namespace KASHOP.PL
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+            builder.Services
+.AddAuthentication(options => {
+ options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+ options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+
+})
+.AddJwtBearer(options =>
+{
+
+ options.TokenValidationParameters = new TokenValidationParameters
+ {
+     ValidateIssuer = true,
+     ValidateAudience = true,
+     ValidateLifetime = true,
+     ValidateIssuerSigningKey = true,
+     ValidIssuer = builder.Configuration["ApiSettings:issuer"],
+     ValidAudience = builder.Configuration["ApiSettings:audience"],
+     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["ApiSettings:SecretKey"]))
+ };
+});
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             var app = builder.Build();

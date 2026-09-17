@@ -3,9 +3,14 @@ using KASHOP.DAL.Dto;
 using KASHOP.DAL.Models;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,12 +20,14 @@ namespace KASHOP.BLL.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _confg;
 
-        public AuthunticationService( UserManager<ApplicationUser>userManager,IEmailSender emailSender
+        public AuthunticationService( UserManager<ApplicationUser>userManager,IEmailSender emailSender,IConfiguration confg
             )
         {
              _userManager = userManager;
            _emailSender = emailSender;
+            _confg = confg;
         }
 
         public async Task<LoginResponse> LoginAsync(LoginRequest request)
@@ -43,8 +50,8 @@ namespace KASHOP.BLL.Services
             {
                 Message = "Invalid Password"
             };
-           
-            return new LoginResponse() { Message ="Success"};
+
+            return new LoginResponse() { Message ="Success", AccessToken = await GenrateToken(user) };
 
         }
 
@@ -80,6 +87,34 @@ namespace KASHOP.BLL.Services
             request.Token = Uri.UnescapeDataString(request.Token);
             var result = await _userManager.ConfirmEmailAsync(user, request.Token);
             return result.Succeeded;
+        }
+
+        private async Task<string> GenrateToken(ApplicationUser user)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            var userClaims = new List<Claim>() { 
+            
+                new Claim(ClaimTypes.NameIdentifier,user.Id),
+                new Claim(ClaimTypes.Name,user.UserName),
+                new Claim(ClaimTypes.Email,user.Email),
+                new Claim(ClaimTypes.Role,string.Join(",",roles))
+
+
+            };
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_confg["ApiSettings:SecretKey"]));
+
+            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _confg["ApiSettings:SecretKey"],
+                audience: _confg["ApiSettings:SecretKey"],
+                claims: userClaims,
+                expires: DateTime.UtcNow.AddDays(20),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
