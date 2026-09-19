@@ -107,8 +107,8 @@ namespace KASHOP.BLL.Services
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _confg["ApiSettings:SecretKey"],
-                audience: _confg["ApiSettings:SecretKey"],
+                issuer: _confg["ApiSettings:issuer"],
+                audience: _confg["ApiSettings:audience"],
                 claims: userClaims,
                 expires: DateTime.UtcNow.AddDays(20),
                 signingCredentials: creds

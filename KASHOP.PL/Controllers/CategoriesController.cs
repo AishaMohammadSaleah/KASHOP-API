@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace KASHOP.PL.Controllers
@@ -40,7 +41,8 @@ namespace KASHOP.PL.Controllers
         }
         [HttpPost("")]
         public async Task<IActionResult> Create( CategoryRequest request ) {
-        
+
+           var userId= User.FindFirstValue(ClaimTypes.NameIdentifier);
             var response =await _categoryService.CreateCategory(request);
             return Ok();
 
