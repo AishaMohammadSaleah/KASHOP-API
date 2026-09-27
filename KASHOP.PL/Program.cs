@@ -51,38 +51,11 @@ namespace KASHOP.PL
             builder.Services.AddAuthorization();
 
             builder.Services.AddScoped<ISeedData, RoleSeedData>();
-
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IAuthunticationService, AuthunticationService>();
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
-            builder.Services
-.AddAuthentication(options => {
- options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
- options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-
-})
-.AddJwtBearer(options =>
-{
-
- options.TokenValidationParameters = new TokenValidationParameters
- {
-     ValidateIssuer = true,
-     ValidateAudience = true,
-     ValidateLifetime = true,
-     ValidateIssuerSigningKey = true,
-     ValidIssuer = builder.Configuration["ApiSettings:issuer"],
-     ValidAudience = builder.Configuration["ApiSettings:audience"],
-     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["ApiSettings:SecretKey"]))
- };
-});
+            builder.Services.AddIdentityServices();
+            builder.Services.AddJwtAuthServices(builder.Configuration);
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
             var app = builder.Build();
