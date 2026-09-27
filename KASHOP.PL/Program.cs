@@ -3,6 +3,7 @@ using KASHOP.BLL.Services;
 using KASHOP.DAL.Data;
 using KASHOP.DAL.Models;
 using KASHOP.DAL.Repository;
+using KASHOP.PL.Extentions;
 using KASHOP.PL.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -27,9 +28,7 @@ namespace KASHOP.PL
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
-            builder.Services.AddDbContext<ApplicationDbContext>(options => {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
+            builder.Services.AddDatabaseServices(builder.Configuration);
 
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "");
