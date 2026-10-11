@@ -11,6 +11,14 @@ namespace KASHOP.DAL.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Categories_AspNetUsers_createdById",
+                table: "Categories");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Categories_AspNetUsers_updatedById",
+                table: "Categories");
+
             migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
@@ -36,12 +44,13 @@ namespace KASHOP.DAL.Migrations
                         column: x => x.createdById,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_AspNetUsers_updatedById",
                         column: x => x.updatedById,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Products_Categories_CategoryId",
                         column: x => x.CategoryId,
@@ -91,16 +100,55 @@ namespace KASHOP.DAL.Migrations
                 name: "IX_ProductTranslations_ProductId",
                 table: "ProductTranslations",
                 column: "ProductId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Categories_AspNetUsers_createdById",
+                table: "Categories",
+                column: "createdById",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Categories_AspNetUsers_updatedById",
+                table: "Categories",
+                column: "updatedById",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Categories_AspNetUsers_createdById",
+                table: "Categories");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Categories_AspNetUsers_updatedById",
+                table: "Categories");
+
             migrationBuilder.DropTable(
                 name: "ProductTranslations");
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Categories_AspNetUsers_createdById",
+                table: "Categories",
+                column: "createdById",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Categories_AspNetUsers_updatedById",
+                table: "Categories",
+                column: "updatedById",
+                principalTable: "AspNetUsers",
+                principalColumn: "Id");
         }
     }
 }

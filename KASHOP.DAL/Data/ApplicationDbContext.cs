@@ -25,6 +25,36 @@ namespace KASHOP.DAL.Data
             _httpContextAccessor = httpContextAccessor;
         }
 
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+            builder.Entity<Category>()
+            .HasOne(p=>p.createdBy)
+            .WithMany()
+            .HasForeignKey(p=>p.createdById)
+            .OnDelete(DeleteBehavior.Restrict);
+           
+            builder.Entity<Category>()
+            .HasOne(p => p.updatedBy)
+            .WithMany()
+            .HasForeignKey(p => p.updatedById)
+            .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+       .HasOne(p => p.createdBy)
+       .WithMany()
+       .HasForeignKey(p => p.createdById)
+       .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Product>()
+            .HasOne(p => p.updatedBy)
+            .WithMany()
+            .HasForeignKey(p => p.updatedById)
+            .OnDelete(DeleteBehavior.Restrict);
+            builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+
+        }
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<AuditableEntity>();
@@ -45,5 +75,17 @@ namespace KASHOP.DAL.Data
             }
             return base.SaveChangesAsync(cancellationToken);
         }
+        //protected override  void OnModelCreating(ModelBuilder builder){
+        
+        //base.OnModelCreating(builder);
+
+        
+        
+        
+        
+        
+        //}
+
+
     }
 }

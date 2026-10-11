@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KASHOP.DAL.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20261011083057_product")]
+    [Migration("20261011122329_product")]
     partial class product
     {
         /// <inheritdoc />
@@ -375,12 +375,13 @@ namespace KASHOP.DAL.Migrations
                     b.HasOne("KASHOP.DAL.Models.ApplicationUser", "createdBy")
                         .WithMany()
                         .HasForeignKey("createdById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("KASHOP.DAL.Models.ApplicationUser", "updatedBy")
                         .WithMany()
-                        .HasForeignKey("updatedById");
+                        .HasForeignKey("updatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("createdBy");
 
@@ -407,12 +408,13 @@ namespace KASHOP.DAL.Migrations
                     b.HasOne("KASHOP.DAL.Models.ApplicationUser", "createdBy")
                         .WithMany()
                         .HasForeignKey("createdById")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("KASHOP.DAL.Models.ApplicationUser", "updatedBy")
                         .WithMany()
-                        .HasForeignKey("updatedById");
+                        .HasForeignKey("updatedById")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Category");
 
