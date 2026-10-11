@@ -30,9 +30,10 @@ namespace KASHOP.PL.Controllers
             _categoryService = categoryService;
         }
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index( )
         {
-            var categories = await _categoryService.GetAllCategories();
+         
+            var categories = await _categoryService.GetAllCategories( );
 
             return Ok(new {
                 _localizer["sucses"].Value,

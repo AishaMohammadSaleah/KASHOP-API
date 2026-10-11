@@ -4,6 +4,7 @@ using KASHOP.DAL.Repository;
 using Mapster;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -29,12 +30,17 @@ namespace KASHOP.BLL.Services
         }
 
       
-        public async Task<List<CategoryResponse>> GetAllCategories()
+        public async Task<List<CategoryResponse>> GetAllCategories( )
         {
-            var catiegories = await _categoryRepository.getAllAsync( new string[]
-            {
-                nameof(Category.Translations)
-            });
+            //var lang = CultureInfo.CurrentUICulture.Name;
+            var catiegories = await _categoryRepository.getAllAsync(
+                new string[] { nameof(Category.Translations), "createdBy" });
+            //var response = catiegories.BuildAdapter().AddParameters("lang", lang).AdaptToType <List <CategoryResponse>>();
+            //foreach (var category in catiegories)
+            //{
+
+            //    category.Translations=category.Translations.Where(t=>t.Language==lang).ToList();
+            //}
             var response = catiegories.Adapt<List<CategoryResponse>>();
             return response;
         }

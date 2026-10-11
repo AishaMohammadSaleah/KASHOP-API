@@ -1,3 +1,4 @@
+using KASHOP.BLL.Mapping;
 using KASHOP.PL.Extentions;
 using Microsoft.Extensions.Options;
 
@@ -15,6 +16,7 @@ namespace KASHOP.PL
             var app = builder.Build();
             // 2. Configure HTTP Request Pipeline
             app.UseRequestLocalization(app.Services.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
+            MapsterConfig.MapsterConfigRegister();
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();

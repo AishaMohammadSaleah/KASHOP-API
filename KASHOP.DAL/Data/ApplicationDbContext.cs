@@ -17,11 +17,14 @@ namespace KASHOP.DAL.Data
 
         public DbSet<Category> Categories { get; set; }
         public DbSet<CatergoryTranslation> CatergoryTranslations { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<ProductTranslation> ProductTranslations { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHttpContextAccessor httpContextAccessor)
             : base(options)
         {
             _httpContextAccessor = httpContextAccessor;
         }
+
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var entries = ChangeTracker.Entries<AuditableEntity>();
